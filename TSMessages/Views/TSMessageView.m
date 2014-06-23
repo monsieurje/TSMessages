@@ -171,7 +171,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
                                                    alpha:1.0];
         
         
-        self.textSpaceLeft = 2 * TSMessageViewPadding;
+        self.textSpaceLeft = TSMessageViewPadding; // Changed from 2 * TSMessageViewPadding;
         if (image) self.textSpaceLeft += image.size.width + 2 * TSMessageViewPadding;
         
         // Set up title label
@@ -189,7 +189,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         [self.titleLabel setShadowColor:[UIColor colorWithHexString:[current valueForKey:@"shadowColor"] alpha:1.0]];
         [self.titleLabel setShadowOffset:CGSizeMake([[current valueForKey:@"shadowOffsetX"] floatValue],
                                                     [[current valueForKey:@"shadowOffsetY"] floatValue])];
-        self.titleLabel.numberOfLines = 0;
+        self.titleLabel.numberOfLines = 1; // Changed from 0;
         self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:self.titleLabel];
         
@@ -216,7 +216,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             [self.contentLabel setShadowColor:self.titleLabel.shadowColor];
             [self.contentLabel setShadowOffset:self.titleLabel.shadowOffset];
             self.contentLabel.lineBreakMode = self.titleLabel.lineBreakMode;
-            self.contentLabel.numberOfLines = 0;
+            self.contentLabel.numberOfLines = 1; // Changed from 0;
             
             [self addSubview:self.contentLabel];
         }
@@ -261,19 +261,19 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             }
             
             [self.button setTitleColor:buttonTitleTextColor forState:UIControlStateNormal];
-            self.button.titleLabel.font = [UIFont boldSystemFontOfSize:14.0];
+            self.button.titleLabel.font = [UIFont boldSystemFontOfSize:13.0]; // Changed from 14.0
             self.button.titleLabel.shadowOffset = CGSizeMake([[current valueForKey:@"buttonTitleShadowOffsetX"] floatValue],
                                                              [[current valueForKey:@"buttonTitleShadowOffsetY"] floatValue]);
             [self.button addTarget:self
                             action:@selector(buttonTapped:)
                   forControlEvents:UIControlEventTouchUpInside];
             
-            self.button.contentEdgeInsets = UIEdgeInsetsMake(0.0, 5.0, 0.0, 5.0);
+            self.button.contentEdgeInsets = UIEdgeInsetsMake(-2.0, 6.0, -2.0, 6.0); // Changed from UIEdgeInsetsMake(0.0, 5.0, 0.0, 5.0)
             [self.button sizeToFit];
             self.button.frame = CGRectMake(screenWidth - TSMessageViewPadding - self.button.frame.size.width,
                                            0.0,
                                            self.button.frame.size.width,
-                                           31.0);
+                                           28.0); // Changed from 31.0);
             
             [self addSubview:self.button];
             
@@ -344,7 +344,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     
     
     self.titleLabel.frame = CGRectMake(self.textSpaceLeft,
-                                       TSMessageViewPadding,
+                                       20.0 + 2.0, // Changed from TSMessageViewPadding,
                                        screenWidth - TSMessageViewPadding - self.textSpaceLeft - self.textSpaceRight,
                                        0.0);
     [self.titleLabel sizeToFit];
@@ -352,7 +352,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     if ([self.subtitle length])
     {
         self.contentLabel.frame = CGRectMake(self.textSpaceLeft,
-                                             self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 5.0,
+                                             self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 2.0, // Changed from 5.0,
                                              screenWidth - TSMessageViewPadding - self.textSpaceLeft - self.textSpaceRight,
                                              0.0);
         [self.contentLabel sizeToFit];
@@ -383,8 +383,8 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     }
     
     // z-align button
-    self.button.center = CGPointMake([self.button center].x,
-                                     round(currentHeight / 2.0));
+//    self.button.center = CGPointMake([self.button center].x,
+//                                     round(currentHeight / 2.0));
     
     if (self.messagePosition == TSMessageNotificationPositionTop)
     {
@@ -396,13 +396,13 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     
     currentHeight += self.borderView.frame.size.height;
     
-    self.frame = CGRectMake(0.0, self.frame.origin.y, self.frame.size.width, currentHeight);
-    
+//    self.frame = CGRectMake(0.0, self.frame.origin.y, self.frame.size.width, currentHeight);
+    self.frame = CGRectMake(0.0, 0.0, self.frame.size.width, currentHeight);
     
     if (self.button)
     {
         self.button.frame = CGRectMake(self.frame.size.width - self.textSpaceRight,
-                                       round((self.frame.size.height / 2.0) - self.button.frame.size.height / 2.0),
+                                       28.0, // Changed from round((self.frame.size.height / 2.0) - self.button.frame.size.height / 2.0),
                                        self.button.frame.size.width,
                                        self.button.frame.size.height);
     }
@@ -411,7 +411,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     CGRect backgroundFrame = CGRectMake(self.backgroundImageView.frame.origin.x,
                                         self.backgroundImageView.frame.origin.y,
                                         screenWidth,
-                                        currentHeight);
+                                        64.0); // Changed from currentHeight);
     
     // increase frame of background view because of the spring animation
     if ([TSMessage iOS7StyleEnabled])
@@ -424,8 +424,8 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             if (!navigationController && [self.viewController isKindOfClass:[UINavigationController class]]) {
                 navigationController = (UINavigationController *)self.viewController;
             }
-            BOOL isNavBarIsHidden = !navigationController || [TSMessage isNavigationBarInNavigationControllerHidden:navigationController];
-            BOOL isNavBarIsOpaque = !navigationController.navigationBar.isTranslucent && navigationController.navigationBar.alpha == 1;
+            BOOL isNavBarIsHidden = !navigationController || [TSMessage isNavigationBarInNavigationControllerHidden:self.viewController.navigationController];
+            BOOL isNavBarIsOpaque = !self.viewController.navigationController.navigationBar.isTranslucent && self.viewController.navigationController.navigationBar.alpha == 1;
             
             if (isNavBarIsHidden || isNavBarIsOpaque) {
                 topOffset = -30.f;
@@ -441,7 +441,10 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     self.backgroundImageView.frame = backgroundFrame;
     self.backgroundBlurView.frame = backgroundFrame;
     
-    return currentHeight;
+//    return currentHeight;
+    
+    return 64.0;
+    
 }
 
 - (void)layoutSubviews
